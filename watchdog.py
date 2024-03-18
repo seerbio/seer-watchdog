@@ -45,25 +45,51 @@ def upload_file_to_s3(s3_client, file_path, bucket, key_prefix):
 
 def main(args):
     """
-    Main function orchestrating the S3 file upload and CloudWatch logging based on command-line arguments.
+    Orchestrates the upload of files to AWS S3 and logs the process to CloudWatch.
+
+    Initializes Boto3 clients for S3 and CloudWatch Logs using provided AWS credentials.
+    Sets up the specified CloudWatch Logs group and stream for logging. Iterates over
+    files in the specified source directory, uploads files with the appropriate prefix
+    to S3, and logs the upload status to CloudWatch.
+
+    Parameters:
+    - args: A namespace containing the command line arguments. Expected arguments are
+            aws_access_key_id, aws_secret_access_key, source_dir, bucket, log_group,
+            and log_stream.
+
+    The function specifically handles NoCredentialsError and PartialCredentialsError
+    to provide user-friendly error messages for issues related to AWS credentials.
     """
-    s3_client = boto3.client('s3', aws_access_key_id=args.aws_access_key_id, aws_secret_access_key=args.aws_secret_access_key)
-    cw_client = boto3.client('logs', aws_access_key_id=args.aws_access_key_id, aws_secret_access_key=args.aws_secret_access_key)
+    try:
+        # Initialize Boto3 clients for S3 and CloudWatch Logs
+        s3_client = boto3.client('s3', aws_access_key_id=args.aws_access_key_id, aws_secret_access_key=args.aws_secret_access_key)
+        cw_client = boto3.client('logs', aws_access_key_id=args.aws_access_key_id, aws_secret_access_key=args.aws_secret_access_key)
 
-    setup_cloudwatch_logs(cw_client, args.log_group, args.log_stream)
+        # Setup CloudWatch Logs for logging
+        setup_cloudwatch_logs(cw_client, args.log_group, args.log_stream)
 
-    for file in os.listdir(args.source_dir):
-        if file.startswith("GER") and "_" in file:
-            file_path = os.path.join(args.source_dir, file)
-            prefix_key = file.split('_')[0]
+        # Iterate over files in the source directory and upload them to S3
+        for file in os.listdir(args.source_dir):
+            if file.startswith("GER") and "_" in file:  # Check for the specific file prefix
+                file_path = os.path.join(args.source_dir, file)
+                prefix_key = file.split('_')[0]  # Extract prefix from the file name
 
-            try:
-                log_message = upload_file_to_s3(s3_client, file_path, args.bucket, prefix_key)
-                log_to_cloudwatch(cw_client, args.log_group, args.log_stream, log_message)
-                print(log_message)
-            except Exception as e:
-                print(f"Error uploading file to S3: {e}")
-                exit(1)
+                try:
+                    # Upload the file to S3 and log the process
+                    log_message = upload_file_to_s3(s3_client, file_path, args.bucket, prefix_key)
+                    log_to_cloudwatch(cw_client, args.log_group, args.log_stream, log_message)
+                    print(log_message)
+                except Exception as e:
+                    print(f"Error uploading file to S3: {e}")
+                    exit(1)
+
+    except NoCredentialsError:
+        print("No AWS credentials found. Please configure your AWS credentials.")
+        exit(1)
+    except PartialCredentialsError:
+        print("Incomplete AWS credentials. Please check your AWS access key ID and secret access key.")
+        exit(1)
+
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Upload files to AWS S3, verify integrity, and log to CloudWatch.')
