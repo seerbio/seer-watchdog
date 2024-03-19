@@ -1,6 +1,3 @@
-# Writing the README content to a .md file
-
-readme_content = """
 # Data Transfer Utility
 
 ## Overview
