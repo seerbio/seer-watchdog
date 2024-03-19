@@ -147,7 +147,7 @@ def main(args):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(
-        description='Conditionally zip a directory, upload it to AWS S3 or copy it to a local directory based on the instrument type and destination, verify integrity, and log both locally and to CloudWatch.')
+        description='Zip a directory, upload it to AWS S3 or copy it to a local directory based on the instrument type and destination, verify integrity, and log both locally and to CloudWatch.')
     parser.add_argument('--aws_access_key_id', help='AWS access key ID (required only if destination is S3)',
                         default=None)
     parser.add_argument('--aws_secret_access_key', help='AWS secret access key (required only if destination is S3)',
