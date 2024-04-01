@@ -49,3 +49,12 @@ optional arguments:
   --destination {S3,Directory} Destination type: Upload to S3 or copy to a local directory
   --log_group LOG_GROUP CloudWatch Logs group name (required only if destination is S3)
   --log_stream LOG_STREAM CloudWatch Logs stream name (required only if destination is S3)
+```
+
+
+### Bruker MS System
+
+![Example Image](resources/Bruker.PNG)
+
+
+
