@@ -7,7 +7,7 @@ This utility script is designed to conditionally zip directories and transfer da
 ## Requirements
 
 - Python 3.x
-- Boto3
+- Boto3 Argparse
 - AWS CLI (configured with access key and secret access key)
 - Access to an AWS S3 bucket (for S3 uploads)
 
