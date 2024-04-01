@@ -20,11 +20,11 @@ python path-to\seer_watchdog.py --aws_access_key_id "" --aws_secret_access_key "
 
 :: Check if the Python script executed successfully.
 if %ERRORLEVEL% neq 0 (
-    echo Error occurred during script execution >> %watchdog3_batch_script_log%
+    echo Error occurred during script execution >> %watchdog_batch_script_log%
     exit /B %ERRORLEVEL%
 )
 
-echo %DATE% %TIME% - Zipped and uploaded: %sourceDir% >> %watchdog3_batch_script_log%
+echo %DATE% %TIME% - Zipped and uploaded: %sourceDir% >> %watchdog_batch_script_log%
 
-echo Script executed successfully >> %watchdog3_batch_script_log%
+echo Script executed successfully >> %watchdog_batch_script_log%
 exit /B 0
