@@ -14,7 +14,7 @@ This utility script is designed to conditionally zip directories and transfer da
 ## Setup
 
 1. Ensure Python 3.x is installed on your system.
-2. Install Boto3 by running `pip install boto3`.
+2. Install Boto3 and ArgParse by running `pip install boto3 argparse`.
 3. Configure AWS CLI with your AWS credentials (`aws_access_key_id` and `aws_secret_access_key`) by running `aws configure`.
 
 ## Usage
