@@ -95,8 +95,8 @@ exit /B 0
 ```
 
 ### Example batch script
-'''
-seer_watchdog.bat test path-to-file\TESTING_202400326RC8_30minT2A19_G5_1_27833.d
+```
+seer_watchdog.bat dummy_parameter1 path-to-file\TESTING_202400326RC8_30minT2A19_G5_1_27833.d
 ```
 
 
