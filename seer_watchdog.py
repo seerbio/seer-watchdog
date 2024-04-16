@@ -109,6 +109,10 @@ def find_or_create_prefixed_dir(dest, prefix):
 
 def main(args):
     global cw_client  # To make cw_client accessible in other functions
+
+    # Change the working directory to the specified source directory
+    os.chdir('C:/seer-scripts/watchdog3')
+
     try:
         s3_client = boto3.client('s3', aws_access_key_id=args.aws_access_key_id,
                                  aws_secret_access_key=args.aws_secret_access_key,
