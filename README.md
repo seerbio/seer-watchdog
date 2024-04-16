@@ -7,7 +7,7 @@ This utility script is designed to conditionally zip directories and transfer da
 ## Requirements
 
 - Python 3.x
-- Boto3
+- Boto3 Argparse
 - AWS CLI (configured with access key and secret access key)
 - Access to an AWS S3 bucket (for S3 uploads)
 
@@ -49,3 +49,56 @@ optional arguments:
   --destination {S3,Directory} Destination type: Upload to S3 or copy to a local directory
   --log_group LOG_GROUP CloudWatch Logs group name (required only if destination is S3)
   --log_stream LOG_STREAM CloudWatch Logs stream name (required only if destination is S3)
+```
+
+
+### Bruker MS System
+
+- Create column in MS method with  ACQEnd_Execute and ACQEnd_Parameter columns
+- Provide path to windows batch script
+
+![Example Image](resources/Bruker.PNG)
+
+### Example Windows Batch Script
+
+```
+@echo off
+set param1=%1
+set sourceDir=%2
+
+:: Check if the source directory argument is provided
+if "%~2" == "" (
+    echo You must provide the source directory as the second argument.
+    exit /B -1
+)
+
+set watchdog_batch_script_log=E:/git/seer-watchdog/script_logs
+echo %DATE% %TIME% - param1 is %param1% >> %watchdog_batch_script_log%
+echo %DATE% %TIME% - Invoked with directory: %sourceDir% >> %watchdog_batch_script_log%
+
+:: Log the execution of seer_watchdog.py
+echo %DATE% %TIME% - Executing seer_watchdog.py with directory: %sourceDir% >> %watchdog_batch_script_log%
+
+:: Execute seer_watchdog.py and log output
+python E:\git\seer-watchdog\seer_watchdog.py --aws_access_key_id "" --aws_secret_access_key "" --aws-region us-west-2 --source "%sourceDir%" --bucket seer-de-test-bucket --instrument Bruker --destination S3 --log_group ms_data_log_group --log_stream ms_data_log_stream >> %watchdog_batch_script_log% 2>&1
+
+:: Check if the Python script executed successfully.
+if %ERRORLEVEL% neq 0 (
+    echo Error occurred during script execution >> %watchdog_batch_script_log%
+    exit /B %ERRORLEVEL%
+)
+
+echo %DATE% %TIME% - Zipped and uploaded: %sourceDir% >> %watchdog_batch_script_log%
+
+echo Script executed successfully >> %watchdog_batch_script_log%
+exit /B 0
+```
+
+### Example batch script
+```
+seer_watchdog.bat dummy_parameter1 path-to-file\TESTING_202400326RC8_30minT2A19_G5_1_27833.d
+```
+
+
+
+
