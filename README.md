@@ -17,6 +17,11 @@ This utility script is designed to conditionally zip directories and transfer da
 2. Install Boto3 and ArgParse by running `pip install boto3 argparse`.
 3. Configure AWS CLI with your AWS credentials (`aws_access_key_id` and `aws_secret_access_key`) by running `aws configure`.
 
+### Installation
+
+Place the seer_watchdog.py script in the following directory:
+```C:/seer-scripts/watchdog3```
+
 ## Usage
 
 ### Basic Command Structure
