@@ -19,7 +19,7 @@ This utility script is designed to conditionally zip directories and transfer da
 
 ### Installation
 
-Place the seer_watchdog.py and seer_watchdog.bat scripts in the following directory:
+Place the ```seer_watchdog.py``` and ```seer_watchdog.bat``` scripts in the following directory:
 ```C:/seer-scripts/watchdog3```
 
 ## Usage
