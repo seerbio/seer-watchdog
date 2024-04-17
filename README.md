@@ -17,6 +17,54 @@ This utility script is designed to conditionally zip directories and transfer da
 2. Install Boto3 and ArgParse by running `pip install boto3 argparse`.
 3. Configure AWS CLI with your AWS credentials (`aws_access_key_id` and `aws_secret_access_key`) by running `aws configure`.
 
+## Setting Up Python with Miniconda
+
+This guide provides instructions for setting up a Python development environment using Miniconda. It is important to note that the Python executable (`python.exe`) is located in the Miniconda base directory, not in the `Scripts` folder, which is a common point of confusion.
+
+## Prerequisites
+
+Ensure Miniconda is installed on your system. If not, download and install it from the [Miniconda website](https://docs.conda.io/en/latest/miniconda.html).
+
+## Step 1: Verify Python Installation
+
+Locate the Python executable in your Miniconda installation directory. This is typically found at:
+```C:\Users\YourUsername\Miniconda3\python.exe```
+
+## Step 2: Configure Environment Variables
+
+To easily access Python and Conda commands from any command prompt, you need to add Miniconda to your PATH. Here's how:
+
+1. **Open Environment Variables:**
+   - Right-click the **Start** button and select **System**.
+   - Click on **About**, then on **Advanced system settings**.
+   - Click on **Environment Variables** in the System Properties window.
+
+2. **Edit PATH Variable:**
+   - Under "System variables" or "User variables", find and select the **Path** variable and click **Edit**.
+   - Click **New** and add the Miniconda directory:
+     ```
+     C:\Users\YourUsername\Miniconda3
+     ```
+   - Click **New** again and add the `Scripts` directory to access Conda scripts:
+     ```
+     C:\Users\YourUsername\Miniconda3\Scripts
+     ```
+   - Click **OK** to save changes and exit all dialogs.
+
+## Step 3: Restart Command Prompt
+
+Restart any open command prompts to apply the updated PATH settings. Test your configuration by running:
+
+```python --version```
+
+```conda --version```
+
+
+### Installation
+
+Place the ```seer_watchdog.py``` and ```seer_watchdog.bat``` scripts in the following directory:
+```C:/seer-scripts/watchdog3```
+
 ## Usage
 
 ### Basic Command Structure
