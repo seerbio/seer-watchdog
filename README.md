@@ -10,13 +10,7 @@ This utility script is designed to conditionally zip directories and transfer da
 - Boto3 Argparse
 - AWS CLI (configured with access key and secret access key)
 - Access to an AWS S3 bucket (for S3 uploads)
-
-## Setup
-
-1. Ensure Python 3.x is installed on your system.
-2. Install Boto3 and ArgParse by running `pip install boto3 argparse`.
-3. Configure AWS CLI with your AWS credentials (`aws_access_key_id` and `aws_secret_access_key`) by running `aws configure`.
-
+- 
 ## Setting Up Python with Miniconda
 
 This guide provides instructions for setting up a Python development environment using Miniconda. It is important to note that the Python executable (`python.exe`) is located in the Miniconda base directory, not in the `Scripts` folder, which is a common point of confusion.
@@ -58,6 +52,13 @@ Restart any open command prompts to apply the updated PATH settings. Test your c
 ```python --version```
 
 ```conda --version```
+
+
+## Seer-Watchdog Setup
+
+1. Ensure Python 3.x is installed on your system.
+2. Install Boto3 and ArgParse by running `pip install boto3 argparse`.
+3. Configure AWS CLI with your AWS credentials (`aws_access_key_id` and `aws_secret_access_key`) by running `aws configure`.
 
 
 ### Installation
