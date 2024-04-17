@@ -108,17 +108,25 @@ def find_or_create_prefixed_dir(dest, prefix):
     return new_dir_path
 
 def main(args):
+
     global cw_client  # To make cw_client accessible in other functions
 
     # Change the working directory to the specified source directory
-    os.chdir('C:/seer-scripts/watchdog3')
+    os.chdir(args.install_dir)
+
+    # Use environment variables if command line arguments are not provided
+    aws_access_key_id = args.aws_access_key_id or os.getenv('AWS_ACCESS_KEY_ID')
+    aws_secret_access_key = args.aws_secret_access_key or os.getenv('AWS_SECRET_ACCESS_KEY')
+
+    if not (aws_access_key_id and aws_secret_access_key):
+        raise ValueError("AWS credentials must be provided either via command line or as environment variables.")
 
     try:
-        s3_client = boto3.client('s3', aws_access_key_id=args.aws_access_key_id,
-                                 aws_secret_access_key=args.aws_secret_access_key,
+        s3_client = boto3.client('s3', aws_access_key_id=aws_access_key_id,
+                                 aws_secret_access_key=aws_secret_access_key,
                                  region_name=args.aws_region)
-        cw_client = boto3.client('logs', aws_access_key_id=args.aws_access_key_id,
-                                 aws_secret_access_key=args.aws_secret_access_key,
+        cw_client = boto3.client('logs', aws_access_key_id=aws_access_key_id,
+                                 aws_secret_access_key=aws_secret_access_key,
                                  region_name=args.aws_region)
         setup_cloudwatch_logs(cw_client, args.log_group, args.log_stream)
 
@@ -147,6 +155,7 @@ def main(args):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Zip Bruker and Sciex *.wiff and *.d directories (or transfer Thermo *.raw), upload it to AWS S3 or copy it to a local directory based on the instrument type and destination, verify integrity, and log both locally and to CloudWatch.')
+    parser.add_argument('--install-dir', help='Installation directory path', required=True)
     parser.add_argument('--aws_access_key_id', help='AWS access key ID (required only if destination is S3)', default=None)
     parser.add_argument('--aws_secret_access_key', help='AWS secret access key (required only if destination is S3)', default=None)
     parser.add_argument('--aws-region', help='AWS region for Boto3', required=True)
