@@ -149,6 +149,14 @@ exit /B 0
 seer_watchdog.bat dummy_parameter1 path-to-file\TESTING_202400326RC8_30minT2A19_G5_1_27833.d
 ```
 
+### Thermo MS System
+
+- Create a processing method
+- Run program as processing step
+
+TODO
+
+
 
 
 
