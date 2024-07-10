@@ -152,6 +152,7 @@ seer_watchdog.bat dummy_parameter1 path-to-file\TESTING_202400326RC8_30minT2A19_
 ### Thermo MS System
 
 - Create a processing method
+- ![Example Image](resources/thermo.PNG)
 - Run program as processing step
 
 TODO
