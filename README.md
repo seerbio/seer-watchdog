@@ -152,6 +152,7 @@ seer_watchdog.bat dummy_parameter1 path-to-file\TESTING_202400326RC8_30minT2A19_
 ### Thermo MS System
 
 - Create a processing method (SYNC MUST BE CHECKED and %R is the parameter for the fully qualified file path)
+- Supply the path to the batch script in the program path
 - ![Example Image](resources/thermo.PNG)
 - Run program as processing step
 - Run sequence with programs as Processing Actions like so:
