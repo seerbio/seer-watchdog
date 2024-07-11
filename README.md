@@ -57,7 +57,7 @@ Restart any open command prompts to apply the updated PATH settings. Test your c
 ## Seer-Watchdog Setup
 
 1. Ensure Python 3.x is installed on your system.
-2. Install Boto3 and ArgParse by running `pip install boto3 argparse`.
+2. Install Boto3 and ArgParse by running `pip install boto3 argparse awscli`.
 3. Configure AWS CLI with your AWS credentials (`aws_access_key_id` and `aws_secret_access_key`) by running `aws configure`.
 
 
