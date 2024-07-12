@@ -8,7 +8,7 @@ if "%~2" == "" (
     exit /B -1
 )
 
-set watchdog_batch_script_log=C:/seer-watchdog/watchdog3/script_logs
+set watchdog_batch_script_log=C:/seer-scripts/watchdog3/script_logs
 echo %DATE% %TIME% - param1 is %param1% >> %watchdog_batch_script_log%
 echo %DATE% %TIME% - Invoked with directory: %sourceDir% >> %watchdog_batch_script_log%
 
