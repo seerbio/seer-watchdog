@@ -50,7 +50,7 @@ def zip_directory(source, zip_name):
 def upload_file_to_s3(s3_client, file_path, bucket, file_name):
     """Uploads a file to S3 with integrity check and detailed logging."""
     file_size = os.path.getsize(file_path)
-    start_log_message = f"Starting upload of {file_path} to s3://{bucket}/{file_name}. File size: {file_size} bytes."
+    start_log_message = f"Starting upload of {file_path} to s3://{bucket}/{s3_key}. File size: {file_size} bytes."
     log_locally(start_log_message)
     log_to_cloudwatch(cw_client, args.log_group, args.log_stream, start_log_message)
 
