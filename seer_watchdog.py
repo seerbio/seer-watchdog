@@ -50,12 +50,12 @@ def zip_directory(source, zip_name):
 def upload_file_to_s3(s3_client, file_path, bucket, file_name):
     """Uploads a file to S3 with integrity check and detailed logging."""
     file_size = os.path.getsize(file_path)
+    s3_key = f"{extract_prefix(file_name)}/{file_name}"
     start_log_message = f"Starting upload of {file_path} to s3://{bucket}/{s3_key}. File size: {file_size} bytes."
     log_locally(start_log_message)
     log_to_cloudwatch(cw_client, args.log_group, args.log_stream, start_log_message)
 
     original_checksum = calculate_checksum(file_path)
-    s3_key = f"{extract_prefix(file_name)}/{file_name}"
     s3_client.upload_file(file_path, bucket, s3_key)
 
     upload_log_message = f"File {file_name} uploaded successfully to s3://{bucket}/{s3_key}. Original checksum: {original_checksum}"
