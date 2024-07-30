@@ -156,8 +156,6 @@ seer_watchdog.bat dummy_parameter1 path-to-file\TESTING_202400326RC8_30minT2A19_
 - Supply the path to the batch script in the program path with %R
 - ![Example Image](resources/thermo_programs.PNG)
 - Run program as processing step
-- Run sequence with programs as Processing Actions like so:
-- ![Example Image](resources/thermo_sequence.PNG)
 
 TODO
 
