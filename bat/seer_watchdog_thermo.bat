@@ -18,12 +18,12 @@ if "%sourceDir:EXP=%" neq "%sourceDir%" (
     :: EXP detected
     set "aws_access_key_id=YOUR_AWS_ACCESS_KEY_ID_EXP"
     set "aws_secret_access_key=YOUR_AWS_SECRET_ACCESS_KEY_EXP"
-    set "aws_region=us-west-1"
+    set "aws_region=us-west-2"
 ) else if "%sourceDir:GER=%" neq "%sourceDir%" (
     :: GER detected
     set "aws_access_key_id=YOUR_AWS_ACCESS_KEY_ID_GER"
     set "aws_secret_access_key=YOUR_AWS_SECRET_ACCESS_KEY_GER"
-    set "aws_region=us-west-1"  :: Change this if the region is different for GER
+    set "aws_region=us-west-2"  :: Change this if the region is different for GER
 ) else (
     echo Source directory must contain 'EXP' or 'GER' to determine AWS credentials.
     exit /B -1
