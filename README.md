@@ -13,7 +13,7 @@ This utility script is designed to conditionally zip directories and transfer da
 - 
 ## Setting Up Python with Miniconda
 
-This guide provides instructions for setting up a Python development environment using Miniconda. It is important to note that the Python executable (`python.exe`) is located in the Miniconda base directory, not in the `Scripts` folder, which is a common point of confusion.
+This guide provides instructions for setting up a Python development environment using Miniconda. It is important to note that the Python executable (`python.exe`) is located in the Miniconda base directory, not in the `Scripts` folder, which is a common point of confusion. You can also optionally use the installer.bat script (ensure you download the utilities into the watchdog3 folder)
 
 ## Prerequisites
 
