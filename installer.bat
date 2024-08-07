@@ -4,7 +4,6 @@ set "USERNAME=%1"
 :: Check if the USERNAME parameter is provided
 if "%USERNAME%" == "" (
     echo You must provide the username as the first argument.
-    echo Usage: install_data_transfer_utility.bat <username>
     exit /B -1
 )
 
