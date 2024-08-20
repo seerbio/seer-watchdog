@@ -10,35 +10,43 @@ if "%~1" == "" (
 set watchdog_batch_script_log=C:\seer-scripts\watchdog3\script_logs
 echo %DATE% %TIME% - Invoked with Thermo Raw File: %sourceDir% >> %watchdog_batch_script_log%
 
+:: Extract the filename from the full path
+for %%I in (%sourceDir%) do set fileName=%%~nxI
+
 :: Initialize variables
 set aws_access_key_id=
 set aws_secret_access_key=
 set aws_region=
 set bucket_name=
 
-:: Determine which AWS credentials and bucket to use based on source directory argument
-
-:: Check for EXP or USTESTING
-echo %sourceDir% | findstr /i /r /c:"^EXP" /c:"^USTESTING" >nul
-if %ERRORLEVEL% equ 0 (
-    :: EXP or USTESTING detected
+:: Determine which AWS credentials and bucket to use based on the filename
+if not "%fileName:EXP=%"=="%fileName%" (
+    :: EXP detected
     set aws_access_key_id=YOUR_AWS_ACCESS_KEY_ID_EXP
     set aws_secret_access_key=YOUR_AWS_SECRET_ACCESS_KEY_EXP
     set aws_region=us-west-2
     set bucket_name=seer-internalms
+) else if not "%fileName:USTESTING=%"=="%fileName%" (
+    :: USTESTING detected
+    set aws_access_key_id=YOUR_AWS_ACCESS_KEY_ID_EXP
+    set aws_secret_access_key=YOUR_AWS_SECRET_ACCESS_KEY_EXP
+    set aws_region=us-west-2
+    set bucket_name=seer-internalms
+) else if not "%fileName:GER=%"=="%fileName%" (
+    :: GER detected
+    set aws_access_key_id=YOUR_AWS_ACCESS_KEY_ID_GER
+    set aws_secret_access_key=YOUR_AWS_SECRET_ACCESS_KEY_GER
+    set aws_region=eu-central-1
+    set bucket_name=seer-internalms-eu
+) else if not "%fileName:EUTESTING=%"=="%fileName%" (
+    :: EUTESTING detected
+    set aws_access_key_id=YOUR_AWS_ACCESS_KEY_ID_GER
+    set aws_secret_access_key=YOUR_AWS_SECRET_ACCESS_KEY_GER
+    set aws_region=eu-central-1
+    set bucket_name=seer-internalms-eu
 ) else (
-    :: Check for GER or EUTESTING
-    echo %sourceDir% | findstr /i /r /c:"^GER" /c:"^EUTESTING" >nul
-    if %ERRORLEVEL% equ 0 (
-        :: GER or EUTESTING detected
-        set aws_access_key_id=YOUR_AWS_ACCESS_KEY_ID_GER
-        set aws_secret_access_key=YOUR_AWS_SECRET_ACCESS_KEY_GER
-        set aws_region=eu-central-1
-        set bucket_name=seer-internalms-eu
-    ) else (
-        echo Source directory must start with 'EXP', 'USTESTING', 'GER', or 'EUTESTING' to determine AWS credentials.
-        exit /B -1
-    )
+    echo The file name must contain 'EXP', 'USTESTING', 'GER', or 'EUTESTING' to determine AWS credentials.
+    exit /B -1
 )
 
 :: Execute seer_watchdog.py and log output
