@@ -160,7 +160,8 @@ seer_watchdog.bat dummy_parameter1 path-to-file\TESTING_202400326RC8_30minT2A19_
 - ![Example Image](resources/thermo_programs.PNG)
 - Run program as processing step
 
-TODO
+- IMPORTANT SOme Thermo systems have deleted their 'run program after acquisition' and need to be reloaded. Please follow the steps in this document to update your system
+![Example Image](resources/FC 2024.002 RevC Upgrade Instructions for Xcalibur 4.5 and 4.6 (3).pdf)
 
 
 
