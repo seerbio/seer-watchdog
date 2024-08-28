@@ -158,7 +158,6 @@ seer_watchdog.bat dummy_parameter1 path-to-file\TESTING_202400326RC8_30minT2A19_
 
 - Supply the path to the batch script in the program path with %R (which is the file path)
 - ![Example Image](resources/thermo_programs.PNG)
-- Run program as processing step
 
 ### IMPORTANT Some Thermo systems have deleted their 'run program after acquisition' and need to be reloaded. Please follow the steps in this document to update your system
 [Patch Xcalibur](https://github.com/seerbio/seer-watchdog/blob/main/resources/FC%202024.002%20RevC%20Upgrade%20Instructions%20for%20Xcalibur%204.5%20and%204.6%20(3).pdf)
