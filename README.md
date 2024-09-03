@@ -8,7 +8,7 @@ This utility script is designed to conditionally zip directories and transfer da
 
 - Python 3.x
 - Boto3 Argparse
-- AWS CLI (configured with access key and secret access key)
+- AWS CLI (configured with access key and secret access key) or create a user with restricted access and supply the credentials into the *.bat script (hard code them)
 - Access to an AWS S3 bucket (for S3 uploads)
 - 
 ## Setting Up Python with Miniconda
