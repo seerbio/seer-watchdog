@@ -4,6 +4,8 @@
 
 This utility script is designed to conditionally zip directories and transfer data either to AWS S3 or to a local directory, depending on the specified instrument type and destination. It supports instruments of types Bruker, Thermo, and Sciex. For Bruker and Sciex, the utility zips the specified directories (expecting `.d` and `.wiff` files respectively) before transfer. For Thermo, the `.raw` files are transferred without zipping. The script also verifies file integrity, logs actions locally, and to AWS CloudWatch. All workflows leverage the instrument acqusition software to launch the file transfer utilities in near real-time.
 
+- ![Example Image](resources/thermo_programs.PNG)
+
 ## Requirements
 
 - Python 3.x
