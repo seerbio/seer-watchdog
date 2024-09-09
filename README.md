@@ -48,8 +48,9 @@ To easily access Python and Conda commands from any command prompt, you need to 
      C:\Users\YourUsername\Miniconda3\Scripts
      ```
    - (Optional) Click **New** again and add the `watchdog3` directory to access bat scripts (some windows systems don't recognize *.bat scripts from that directory):
+     IMPORTANT: This path is hardcoded in the python script to function with Bruker systems. You can modify as needed
      ```
-     C::\seer-scripts\watchdog3
+     C:\seer-scripts\watchdog3
      ```
    - Click **OK** to save changes and exit all dialogs.
 
