@@ -1,4 +1,5 @@
 import os
+import sys
 import time
 import boto3
 import argparse
@@ -88,6 +89,8 @@ def copy_file_to_directory(source, dest, file_name):
         error_message = f"Error: Integrity check failed for {file_name} after copying."
         log_locally(error_message)
         log_to_cloudwatch(cw_client, args.log_group, args.log_stream, error_message)
+        import sys
+        sys.exit(1)
 
 def calculate_checksum(file_path):
     """Calculates the MD5 checksum of a file."""
@@ -129,9 +132,11 @@ def main(args):
         except NoCredentialsError:
             message = "No AWS credentials found. Please configure your AWS credentials."
             log_locally(message)
+            sys.exit(1)
         except PartialCredentialsError:
             message = "Incomplete AWS credentials. Please check your AWS access key ID and secret access key."
             log_locally(message)
+            sys.exit(1)
 
     file_to_transfer = args.source
 
