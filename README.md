@@ -48,7 +48,7 @@ To easily access Python and Conda commands from any command prompt, you need to 
      C:\Users\YourUsername\Miniconda3\Scripts
      ```
    - (Optional) Click **New** again and add the `watchdog3` directory to access bat scripts (some windows systems don't recognize *.bat scripts from that directory):
-     IMPORTANT: This path is hardcoded in the python script to function with Bruker systems. You can modify as needed
+     IMPORTANT: This path is defaulted in the python script to function with Bruker systems. You can modify as needed with the `--working-dir` argument
      ```
      C:\seer-scripts\watchdog3
      ```
@@ -81,34 +81,32 @@ Place the ```seer_watchdog.py``` and ```seer_watchdog.bat``` scripts in the foll
 ### Basic Command Structure
 
 ```shell
-python seer_watchdog.py --source <SOURCE> --dest <DESTINATION_PATH> --instrument <INSTRUMENT_TYPE> --destination <DESTINATION_TYPE> [--bucket <BUCKET_NAME>] [--aws_access_key_id <ACCESS_KEY>] [--aws_secret_access_key <SECRET_KEY>] [--log_group <LOG_GROUP>] [--log_stream <LOG_STREAM>]
+usage: seer_watchdog.py [-h] [--aws_access_key_id AWS_ACCESS_KEY_ID] [--aws_secret_access_key AWS_SECRET_ACCESS_KEY] [--aws-region AWS_REGION] --source SOURCE [--bucket BUCKET] [--dest DEST] --instrument {Bruker,Thermo,Sciex} --destination {S3,Directory} [--log_group LOG_GROUP] [--log_stream LOG_STREAM] [--working-dir WORKING_DIR]
 
-usage: seer_watchdog.py [-h] [--aws_access_key_id AWS_ACCESS_KEY_ID]
-                        [--aws_secret_access_key AWS_SECRET_ACCESS_KEY]
-                        --source SOURCE [--bucket BUCKET] [--dest DEST]
-                        --instrument {Bruker,Thermo,Sciex} --destination
-                        {S3,Directory} [--log_group LOG_GROUP]
-                        [--log_stream LOG_STREAM]
+Zip Bruker and Sciex *.wiff and *.d directories (or transfer Thermo *.raw), upload it to AWS S3 or copy it to a local directory based on the instrument type and destination, verify integrity, and log both locally and to CloudWatch (if configured).
 
-Zip Bruker and Sciex *.wiff and *.d directories (or transfer Thermo *.raw),
-upload it to AWS S3 or copy it to a local directory based on the instrument
-type and destination, verify integrity, and log both locally and to
-CloudWatch.
-
-optional arguments:
+options:
   -h, --help            show this help message and exit
   --aws_access_key_id AWS_ACCESS_KEY_ID
                         AWS access key ID (required only if destination is S3)
   --aws_secret_access_key AWS_SECRET_ACCESS_KEY
                         AWS secret access key (required only if destination is S3)
+  --aws-region AWS_REGION
+                        AWS region (required only if destination is S3)
   --source SOURCE       Source directory or file to be uploaded/copied
   --bucket BUCKET       Destination S3 bucket name (required only if destination is S3)
   --dest DEST           Destination directory for file copy (required only if destination is Directory)
-  --instrument {Bruker,Thermo,Sciex} Type of instrument
-  --destination {S3,Directory} Destination type: Upload to S3 or copy to a local directory
-  --log_group LOG_GROUP CloudWatch Logs group name (required only if destination is S3)
-  --log_stream LOG_STREAM CloudWatch Logs stream name (required only if destination is S3)
-  --install-dir Installation directory path (required)
+  --instrument {Bruker,Thermo,Sciex}
+                        Type of instrument
+  --destination {S3,Directory}
+                        Destination type: Upload to S3 or copy to a local directory
+  --log_group LOG_GROUP
+                        CloudWatch Logs group name (required only if destination is S3)
+  --log_stream LOG_STREAM
+                        CloudWatch Logs stream name (required only if destination is S3)
+  --working-dir WORKING_DIR
+                        Working directory for log files etc (optional, defaults to C:/seer-scripts/watchdog3)
+
 ```
 
 

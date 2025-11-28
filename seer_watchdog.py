@@ -20,6 +20,9 @@ def setup_cloudwatch_logs(cw_client, log_group_name, log_stream_name):
 
 def log_to_cloudwatch(cw_client, log_group_name, log_stream_name, message):
     """Logs a message to CloudWatch Logs."""
+    if cw_client is None:
+        return  # CloudWatch client not initialized
+    
     response = cw_client.describe_log_streams(logGroupName=log_group_name, logStreamNamePrefix=log_stream_name)
     upload_sequence_token = response['logStreams'][0].get('uploadSequenceToken', '0')
 
@@ -109,54 +112,56 @@ def find_or_create_prefixed_dir(dest, prefix):
 
 def main(args):
     global cw_client  # To make cw_client accessible in other functions
+    cw_client = None  # Initialize CloudWatch client to None for local logging only
 
     # Change the working directory to the specified source directory
-    os.chdir('C:/seer-scripts/watchdog3')
+    os.chdir(args.working_dir)
 
-    try:
-        s3_client = boto3.client('s3', aws_access_key_id=args.aws_access_key_id,
-                                 aws_secret_access_key=args.aws_secret_access_key,
-                                 region_name=args.aws_region)
-        cw_client = boto3.client('logs', aws_access_key_id=args.aws_access_key_id,
-                                 aws_secret_access_key=args.aws_secret_access_key,
-                                 region_name=args.aws_region)
-        setup_cloudwatch_logs(cw_client, args.log_group, args.log_stream)
+    if args.destination == 'S3':
+        try:
+            s3_client = boto3.client('s3', aws_access_key_id=args.aws_access_key_id,
+                                    aws_secret_access_key=args.aws_secret_access_key,
+                                    region_name=args.aws_region)
+            cw_client = boto3.client('logs', aws_access_key_id=args.aws_access_key_id,
+                                    aws_secret_access_key=args.aws_secret_access_key,
+                                    region_name=args.aws_region)
+            setup_cloudwatch_logs(cw_client, args.log_group, args.log_stream)
+        except NoCredentialsError:
+            message = "No AWS credentials found. Please configure your AWS credentials."
+            log_locally(message)
+        except PartialCredentialsError:
+            message = "Incomplete AWS credentials. Please check your AWS access key ID and secret access key."
+            log_locally(message)
 
-        file_to_transfer = args.source
-        if args.instrument in ['Bruker', 'Sciex']:
-            file_to_transfer = zip_directory(args.source, os.path.basename(args.source))
-            file_name = os.path.basename(file_to_transfer)
-            original_checksum = calculate_checksum(file_to_transfer)
-            if args.destination == 'S3':
-                upload_file_to_s3(s3_client, file_to_transfer, args.bucket, file_name)
-            elif args.destination == 'Directory':
-                copy_file_to_directory(file_to_transfer, args.dest, file_name)
-            os.remove(file_to_transfer)  # Delete the zip file after use
-            log_message = f"Deleted local zip file {file_to_transfer}"
-            log_locally(log_message)
-            log_to_cloudwatch(cw_client, args.log_group, args.log_stream, log_message)
-        else:
-            file_name = os.path.basename(file_to_transfer)
-            if args.destination == 'S3':
-                upload_file_to_s3(s3_client, file_to_transfer, args.bucket, file_name)
-            elif args.destination == 'Directory':
-                copy_file_to_directory(file_to_transfer, args.dest, file_name)
+    file_to_transfer = args.source
+
+    if args.instrument in ['Bruker', 'Sciex']:
+        file_to_transfer = zip_directory(args.source, os.path.basename(args.source))
+        file_name = os.path.basename(file_to_transfer)
+        if args.destination == 'S3':
+            upload_file_to_s3(s3_client, file_to_transfer, args.bucket, file_name)
+        elif args.destination == 'Directory':
+            copy_file_to_directory(file_to_transfer, args.dest, file_name)
+
+        os.remove(file_to_transfer)  # Delete the zip file after use
+        log_message = f"Deleted local zip file {file_to_transfer}"
+        log_locally(log_message)
+        log_to_cloudwatch(cw_client, args.log_group, args.log_stream, log_message)
+
+    else:
+        file_name = os.path.basename(file_to_transfer)
+        if args.destination == 'S3':
+            upload_file_to_s3(s3_client, file_to_transfer, args.bucket, file_name)
+        elif args.destination == 'Directory':
+            copy_file_to_directory(file_to_transfer, args.dest, file_name)
 
 
-    except NoCredentialsError:
-        message = "No AWS credentials found. Please configure your AWS credentials."
-        log_locally(message)
-        log_to_cloudwatch(cw_client, args.log_group, args.log_stream, message)
-    except PartialCredentialsError:
-        message = "Incomplete AWS credentials. Please check your AWS access key ID and secret access key."
-        log_locally(message)
-        log_to_cloudwatch(cw_client, args.log_group, args.log_stream, message)
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description='Zip Bruker and Sciex *.wiff and *.d directories (or transfer Thermo *.raw), upload it to AWS S3 or copy it to a local directory based on the instrument type and destination, verify integrity, and log both locally and to CloudWatch.')
+    parser = argparse.ArgumentParser(description='Zip Bruker and Sciex *.wiff and *.d directories (or transfer Thermo *.raw), upload it to AWS S3 or copy it to a local directory based on the instrument type and destination, verify integrity, and log both locally and to CloudWatch (if configured).')
     parser.add_argument('--aws_access_key_id', help='AWS access key ID (required only if destination is S3)', default=None)
     parser.add_argument('--aws_secret_access_key', help='AWS secret access key (required only if destination is S3)', default=None)
-    parser.add_argument('--aws-region', help='AWS region for Boto3', required=True)
+    parser.add_argument('--aws-region', help='AWS region (required only if destination is S3)', default=None)
     parser.add_argument('--source', help='Source directory or file to be uploaded/copied', required=True)
     parser.add_argument('--bucket', help='Destination S3 bucket name (required only if destination is S3)', default=None)
     parser.add_argument('--dest', help='Destination directory for file copy (required only if destination is Directory)', default=None)
@@ -164,6 +169,7 @@ if __name__ == "__main__":
     parser.add_argument('--destination', choices=['S3', 'Directory'], help='Destination type: Upload to S3 or copy to a local directory', required=True)
     parser.add_argument('--log_group', help='CloudWatch Logs group name (required only if destination is S3)', default='S3UploadLogs')
     parser.add_argument('--log_stream', help='CloudWatch Logs stream name (required only if destination is S3)', default='InstrumentUploads')
+    parser.add_argument('--working-dir', help='Working directory for log files etc (optional, defaults to C:/seer-scripts/watchdog3)', default='C:/seer-scripts/watchdog3')
 
     args = parser.parse_args()
     main(args)
