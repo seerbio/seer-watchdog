@@ -12,7 +12,7 @@ This utility script is designed to conditionally zip directories and transfer da
 
 - Python 3.x
 - Boto3 Argparse
-- Create a AWS IAM user with restricted access and supply the credentials into the *.bat script (hard code them)
+- Create AWS IAM users with restricted access and provide the credentials through environment variables on the instrument computer
 - Access to an AWS S3 bucket (for S3 uploads)
 - 
 ## Setting Up Python with Miniconda
@@ -67,7 +67,7 @@ Restart any open command prompts to apply the updated PATH settings. Test your c
 
 1. Ensure Python 3.x is installed on your system.
 2. Install awscli, Boto3 and ArgParse by running `pip install boto3 argparse awscli`.
-3. Configure AWS CLI with your AWS credentials (`aws_access_key_id` and `aws_secret_access_key`) by running `aws configure`.
+3. Set environment variables for each destination account on the instrument computer before running the batch scripts.
 4. Install Git to clone repo: https://git-scm.com/download/win
 
 
@@ -75,6 +75,19 @@ Restart any open command prompts to apply the updated PATH settings. Test your c
 
 Place the ```seer_watchdog.py``` and ```seer_watchdog.bat``` scripts in the following directory:
 ```C:/seer-scripts/watchdog3```
+
+### Required Environment Variables
+
+Set these environment variables on each instrument computer so the batch files can select the right AWS account based on the file name:
+
+```shell
+SEER_AWS_ACCESS_KEY_ID_US=<us account access key id>
+SEER_AWS_SECRET_ACCESS_KEY_US=<us account secret access key>
+SEER_AWS_ACCESS_KEY_ID_GER=<ger account access key id>
+SEER_AWS_SECRET_ACCESS_KEY_GER=<ger account secret access key>
+```
+
+The Thermo and Bruker batch files will detect whether the run belongs to the US or GER destination, then set `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`, and `AWS_DEFAULT_REGION` for the Python process before upload.
 
 ## Usage
 
@@ -139,8 +152,13 @@ echo %DATE% %TIME% - Invoked with directory: %sourceDir% >> %watchdog_batch_scri
 :: Log the execution of seer_watchdog.py
 echo %DATE% %TIME% - Executing seer_watchdog.py with directory: %sourceDir% >> %watchdog_batch_script_log%
 
+:: Resolve environment-backed credentials for the US account
+set AWS_ACCESS_KEY_ID=%SEER_AWS_ACCESS_KEY_ID_US%
+set AWS_SECRET_ACCESS_KEY=%SEER_AWS_SECRET_ACCESS_KEY_US%
+set AWS_DEFAULT_REGION=us-west-2
+
 :: Execute seer_watchdog.py and log output
-python E:\git\seer-watchdog\seer_watchdog.py --aws_access_key_id "" --aws_secret_access_key "" --aws-region us-west-2 --source "%sourceDir%" --bucket seer-de-test-bucket --instrument Bruker --destination S3 --log_group ms_data_log_group --log_stream ms_data_log_stream >> %watchdog_batch_script_log% 2>&1
+python E:\git\seer-watchdog\seer_watchdog.py --aws-region us-west-2 --source "%sourceDir%" --bucket seer-de-test-bucket --instrument Bruker --destination S3 --log_group ms_data_log_group --log_stream ms_data_log_stream >> %watchdog_batch_script_log% 2>&1
 
 :: Check if the Python script executed successfully.
 if %ERRORLEVEL% neq 0 (
@@ -166,7 +184,6 @@ seer_watchdog.bat dummy_parameter1 path-to-file\TESTING_202400326RC8_30minT2A19_
 
 ### IMPORTANT Some Thermo systems have deleted their 'run program after acquisition' and need to be reloaded. Please follow the steps in this document to update your system
 [Patch Xcalibur](https://github.com/seerbio/seer-watchdog/blob/main/resources/FC%202024.002%20RevC%20Upgrade%20Instructions%20for%20Xcalibur%204.5%20and%204.6%20(3).pdf)
-
 
 
 
